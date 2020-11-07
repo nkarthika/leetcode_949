@@ -1,0 +1,51 @@
+class Solution:
+    def checkValidMins(self,t,f):
+        poss1 = t*10 +f   
+        poss2 = f*10 +t
+        maxim = max(poss1,poss2)
+        minim = min(poss1,poss2)
+        if maxim <= 59:
+            return maxim
+        elif minim <= 59:
+            return minim
+        return -1
+        
+    
+    def largestTimeFromDigits(self, arr: List[int]) -> str:
+        if len(arr) != 4: return ""
+        dict = {}
+        for i in arr: dict[i] = arr.count(i)
+        orig = dict.copy()   
+        
+        #Find the highest hour possible
+        for i in range(23,-1,-1):
+            dict = orig.copy() #backtrack dict 
+
+            if i >= 10:   
+                intOne = i // 10                          
+                intTwo = i % 10
+            else:
+                intTwo = i
+                intOne = 0
+             
+            if intOne in dict and intTwo in dict:
+                if dict[intOne] > 0:
+                    dict[intOne] -= 1
+                else:
+                    break
+                    
+                if dict[intTwo] > 0:  #If same digit occurs twice
+                    dict[intTwo] -= 1
+                    mins =[]
+                    for i in dict.keys():
+                        while dict[i] > 0: 
+                            dict[i] -= 1
+                            mins.append(i)
+                            
+                    intThr, intFour = mins
+ 
+                    ans = self.checkValidMins(intThr, intFour)
+                    if ans != -1: 
+                        return "{h1}{h2}:{m}".format(h1=intOne,h2=intTwo,m=str(ans).zfill(2))
+                        
+        return ""
